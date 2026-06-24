@@ -1,0 +1,7 @@
+node_modules/
+client/node_modules/
+client/dist/
+tmp_merged/
+*.pdf
+.env
+combined_templates_result.json

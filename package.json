@@ -1,0 +1,20 @@
+{
+  "name": "pdf-merge-web",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Web UI for merging Documenso PDF templates",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev:server": "node --watch server.js",
+    "dev:client": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "install:all": "npm install && cd client && npm install"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "form-data": "^4.0.0",
+    "node-fetch": "^3.3.2",
+    "pdf-lib": "^1.17.1"
+  }
+}
