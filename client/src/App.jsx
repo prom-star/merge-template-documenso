@@ -138,19 +138,33 @@ function TemplateChip({ template, index, total, onRemove, onMoveLeft, onMoveRigh
 // ─────────────────────────────────────────────────────────────────────────
 function CustomSelect({ options, value, onChange, placeholder, icon: Icon, className = "bg-white border-slate-200 text-slate-700 focus:border-blue-400 focus:ring-blue-100", iconClass = "text-slate-400", chevronClass = "text-slate-400" }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const containerRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
         setIsOpen(false);
+        setSearchQuery("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (isOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isOpen]);
+
   const selectedOption = options.find((o) => o.value === value);
+
+  const filteredOptions = options.filter(o => 
+    o.label.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    (o.value || "").toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="relative" ref={containerRef}>
@@ -171,25 +185,42 @@ function CustomSelect({ options, value, onChange, placeholder, icon: Icon, class
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-60 overflow-auto focus:outline-none">
-          <ul className="py-1">
-            {options.map((option) => (
-              <li
-                key={option.value}
-                onClick={() => {
-                  onChange(option.value);
-                  setIsOpen(false);
-                }}
-                className={`px-3 py-2 cursor-pointer hover:bg-blue-50 transition-colors ${
-                  option.value === value ? "bg-blue-50/50" : ""
-                }`}
-              >
-                <div className="text-sm font-medium text-slate-700">{option.label}</div>
-                {option.subLabel && (
-                  <div className="text-[11px] text-slate-400 font-mono mt-0.5">{option.subLabel}</div>
-                )}
+        <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-80 flex flex-col focus:outline-none">
+          <div className="p-2 border-b border-slate-100 shrink-0">
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder="Search by title or ID..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 transition-all placeholder-slate-400"
+            />
+          </div>
+          <ul className="py-1 overflow-auto">
+            {filteredOptions.length === 0 ? (
+              <li className="px-3 py-4 text-center text-sm text-slate-400 italic">
+                No folders found
               </li>
-            ))}
+            ) : (
+              filteredOptions.map((option) => (
+                <li
+                  key={option.value}
+                  onClick={() => {
+                    onChange(option.value);
+                    setIsOpen(false);
+                    setSearchQuery("");
+                  }}
+                  className={`px-3 py-2 cursor-pointer hover:bg-blue-50 transition-colors ${
+                    option.value === value ? "bg-blue-50/50" : ""
+                  }`}
+                >
+                  <div className="text-sm font-medium text-slate-700">{option.label}</div>
+                  {option.subLabel && (
+                    <div className="text-[11px] text-slate-400 font-mono mt-0.5">{option.subLabel}</div>
+                  )}
+                </li>
+              ))
+            )}
           </ul>
         </div>
       )}
