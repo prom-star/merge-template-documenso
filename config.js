@@ -10,12 +10,14 @@
  *   3. Run: node create_combined_templates.js
  */
 
+import "dotenv/config";
+
 // ─────────────────────────────────────────────
 // Documenso
 // ─────────────────────────────────────────────
-export const DOCUMENSO_API_TOKEN = "api_zrfgvhly8f55bird";
-export const DOCUMENSO_BASE_URL  = "https://esign.aushail.com.au/api/v2";
-export const DOCUMENSO_FOLDER_ID = "cmqov3h801hq5o22yd34m5q6i";
+export const DOCUMENSO_API_TOKEN = process.env.DOCUMENSO_API_TOKEN;
+export const DOCUMENSO_BASE_URL  = process.env.DOCUMENSO_BASE_URL;
+export const DOCUMENSO_FOLDER_ID = process.env.DOCUMENSO_FOLDER_ID;
 
 // ─────────────────────────────────────────────
 // Supabase Storage
@@ -27,9 +29,9 @@ export const DOCUMENSO_FOLDER_ID = "cmqov3h801hq5o22yd34m5q6i";
 // The PDF path is read automatically from each template's
 // templateDocumentData.data field — no need to specify it here.
 // ─────────────────────────────────────────────
-export const SUPABASE_URL    = "https://kgreehuvyspxzxvjergp.supabase.co";
-export const SUPABASE_KEY    = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtncmVlaHV2eXNweHp4dmplcmdwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODI3MTAzNiwiZXhwIjoyMDczODQ3MDM2fQ.ZY68NqXB0fm3prMViCzaXmjCdj89FPvQ4rl7hbhO63M";
-export const SUPABASE_BUCKET = "documenso-bucket";
+export const SUPABASE_URL    = process.env.SUPABASE_URL;
+export const SUPABASE_KEY    = process.env.SUPABASE_KEY;
+export const SUPABASE_BUCKET = process.env.SUPABASE_BUCKET;
 
 // ─────────────────────────────────────────────
 // Templates
