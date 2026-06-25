@@ -19,6 +19,7 @@ import {
   FolderOpen,
   RefreshCw,
   Info,
+  Copy,
 } from "lucide-react";
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -287,6 +288,7 @@ function CombinationCard({
   index,
   onChange,
   onRemove,
+  onDuplicate,
 }) {
   const [availableTemplates, setAvailableTemplates] = useState([]);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
@@ -341,16 +343,27 @@ function CombinationCard({
             Combination
           </span>
         </div>
-        {onRemove && (
-          <button
-            id={`remove-combo-${combo.id}`}
-            onClick={onRemove}
-            title="Remove combination"
-            className="text-slate-300 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50"
-          >
-            <Trash2 size={13} />
-          </button>
-        )}
+        <div className="flex items-center gap-1.5">
+          {onDuplicate && (
+            <button
+              onClick={onDuplicate}
+              title="Duplicate combination"
+              className="text-slate-300 hover:text-blue-500 transition-colors p-1.5 rounded-lg hover:bg-blue-50"
+            >
+              <Copy size={13} />
+            </button>
+          )}
+          {onRemove && (
+            <button
+              id={`remove-combo-${combo.id}`}
+              onClick={onRemove}
+              title="Remove combination"
+              className="text-slate-300 hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50"
+            >
+              <Trash2 size={13} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Title */}
@@ -479,6 +492,17 @@ function BuilderStep({
   const addCombo = () =>
     setCombinations((p) => [...p, newCombo(defaultFolderId)]);
 
+  const duplicateCombo = (combo) => {
+    setCombinations((p) => [
+      ...p,
+      {
+        ...combo,
+        id: ++_id,
+        title: combo.title ? `${combo.title} (Copy)` : "",
+      },
+    ]);
+  };
+
   const removeCombo = (id) =>
     setCombinations((p) => p.filter((c) => c.id !== id));
 
@@ -519,6 +543,7 @@ function BuilderStep({
             index={i}
             onChange={(updated) => updateCombo(combo.id, updated)}
             onRemove={combinations.length > 1 ? () => removeCombo(combo.id) : null}
+            onDuplicate={() => duplicateCombo(combo)}
           />
         ))}
       </div>
