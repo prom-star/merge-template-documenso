@@ -5,3 +5,4 @@ tmp_merged/
 *.pdf
 .env
 combined_templates_result.json
+ref/

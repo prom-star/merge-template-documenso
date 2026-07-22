@@ -13,11 +13,20 @@
 import "dotenv/config";
 
 // ─────────────────────────────────────────────
-// Documenso
+// Documenso (Production)
 // ─────────────────────────────────────────────
 export const DOCUMENSO_API_TOKEN = process.env.DOCUMENSO_API_TOKEN;
 export const DOCUMENSO_BASE_URL  = process.env.DOCUMENSO_BASE_URL;
 export const DOCUMENSO_FOLDER_ID = process.env.DOCUMENSO_FOLDER_ID;
+
+// ─────────────────────────────────────────────
+// Documenso (Development)
+//
+// Used exclusively by /api/dev/* routes.
+// Never touches production or Supabase.
+// ─────────────────────────────────────────────
+export const DEV_DOCUMENSO_API_TOKEN = process.env.DEV_DOCUMENSO_API_TOKEN;
+export const DEV_DOCUMENSO_BASE_URL  = process.env.DEV_DOCUMENSO_BASE_URL;
 
 // ─────────────────────────────────────────────
 // Supabase Storage
@@ -32,6 +41,15 @@ export const DOCUMENSO_FOLDER_ID = process.env.DOCUMENSO_FOLDER_ID;
 export const SUPABASE_URL    = process.env.SUPABASE_URL;
 export const SUPABASE_KEY    = process.env.SUPABASE_KEY;
 export const SUPABASE_BUCKET = process.env.SUPABASE_BUCKET;
+
+// ─────────────────────────────────────────────
+// SignNow
+//
+// SIGNNOW_ACCESS_TOKEN  → Bearer token from SignNow
+// SIGNNOW_ROOT_FOLDER_ID → Root "Templates" folder ID to browse
+// ─────────────────────────────────────────────
+export const SIGNNOW_ACCESS_TOKEN  = process.env.SIGNNOW_ACCESS_TOKEN;
+export const SIGNNOW_ROOT_FOLDER_ID = process.env.SIGNNOW_ROOT_FOLDER_ID;
 
 // ─────────────────────────────────────────────
 // Templates
