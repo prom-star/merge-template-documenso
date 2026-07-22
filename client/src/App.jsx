@@ -20,7 +20,11 @@ import {
   RefreshCw,
   Info,
   Copy,
+  CheckSquare2,
+  Upload,
 } from "lucide-react";
+import UpdateFieldsSizePage from "./UpdateFieldsSizePage.jsx";
+import SignNowMigratePage from "./SignNowMigratePage.jsx";
 
 // ─────────────────────────────────────────────────────────────────────────
 // Utilities
@@ -959,6 +963,7 @@ function SummaryStep({ results, onReset }) {
 // Main App
 // ─────────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [activeTab, setActiveTab] = useState("merge"); // "merge" | "update-fields"
   const [step, setStep] = useState(1);
   const [folders, setFolders] = useState([]);
   const [defaultFolderId, setDefaultFolderId] = useState(null);
@@ -1019,12 +1024,12 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 font-sans">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 shadow-sm px-6 py-4">
-        <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-200">
+      <header className="bg-white border-b border-slate-200 shadow-sm px-6 py-3">
+        <div className="max-w-2xl mx-auto flex items-center gap-3 flex-wrap">
+          <div className="w-8 h-8 rounded-xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-200 shrink-0">
             <FileText size={15} className="text-white" />
           </div>
-          <div>
+          <div className="shrink-0">
             <h1 className="text-slate-800 font-bold text-sm leading-none tracking-tight">
               PDF Merge Studio
             </h1>
@@ -1033,16 +1038,58 @@ export default function App() {
             </p>
           </div>
 
-          <div className="ml-auto flex items-center gap-3">
-            {/* Refresh button */}
+          {/* Tab switcher */}
+          <nav className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl mx-auto">
             <button
-              onClick={refresh}
-              disabled={refreshing}
-              title="Refresh folders"
-              className="text-slate-400 hover:text-blue-600 p-1.5 rounded-lg hover:bg-blue-50 transition-all"
+              id="tab-merge"
+              onClick={() => setActiveTab("merge")}
+              className={[
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150",
+                activeTab === "merge"
+                  ? "bg-white text-blue-700 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700",
+              ].join(" ")}
             >
-              <RefreshCw size={14} className={refreshing ? "animate-spin" : ""} />
+              <FileText size={12} /> Merge Templates
             </button>
+            <button
+              id="tab-update-fields"
+              onClick={() => setActiveTab("update-fields")}
+              className={[
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150",
+                activeTab === "update-fields"
+                  ? "bg-white text-violet-700 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700",
+              ].join(" ")}
+            >
+              <CheckSquare2 size={12} /> Update Fields Size
+            </button>
+            <button
+              id="tab-signnow-migrate"
+              onClick={() => setActiveTab("signnow-migrate")}
+              className={[
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-150",
+                activeTab === "signnow-migrate"
+                  ? "bg-white text-orange-600 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700",
+              ].join(" ")}
+            >
+              <Upload size={12} /> Migrate from SignNow
+            </button>
+          </nav>
+
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Refresh button — only relevant for merge tab */}
+            {activeTab === "merge" && (
+              <button
+                onClick={refresh}
+                disabled={refreshing}
+                title="Refresh folders"
+                className="text-slate-400 hover:text-blue-600 p-1.5 rounded-lg hover:bg-blue-50 transition-all"
+              >
+                <RefreshCw size={14} className={refreshing ? "animate-spin" : ""} />
+              </button>
+            )}
 
             {/* Status dot */}
             <div className="flex items-center gap-1.5 text-xs text-slate-400">
@@ -1064,10 +1111,18 @@ export default function App() {
       {/* Main content */}
       <main className="flex-1 flex items-start justify-center px-4 py-10">
         <div className="w-full max-w-2xl">
-          <StepIndicator current={step} />
 
-          {/* Loading */}
-          {loading && (
+          {/* Update Fields Size tab */}
+          {activeTab === "update-fields" && <UpdateFieldsSizePage />}
+
+          {/* Migrate from SignNow tab */}
+          {activeTab === "signnow-migrate" && <SignNowMigratePage />}
+
+          {/* Merge Templates tab */}
+          {activeTab === "merge" && <StepIndicator current={step} />}
+
+          {/* Loading — merge tab only */}
+          {activeTab === "merge" && loading && (
             <div className="text-center py-24">
               <Loader2 size={36} className="text-blue-500 animate-spin mx-auto mb-4" />
               <p className="text-slate-400 text-sm">
@@ -1076,8 +1131,8 @@ export default function App() {
             </div>
           )}
 
-          {/* Load error */}
-          {loadError && (
+          {/* Load error — merge tab only */}
+          {activeTab === "merge" && loadError && (
             <div className="bg-white border border-red-200 rounded-2xl p-8 text-center shadow-sm">
               <XCircle size={36} className="text-red-400 mx-auto mb-3" />
               <p className="text-slate-700 font-semibold mb-1">Failed to connect</p>
@@ -1098,8 +1153,8 @@ export default function App() {
             </div>
           )}
 
-          {/* Steps */}
-          {!loading && !loadError && step === 1 && (
+          {/* Steps — merge tab only */}
+          {activeTab === "merge" && !loading && !loadError && step === 1 && (
             <BuilderStep
               folders={folders}
               defaultFolderId={defaultFolderId}
@@ -1108,7 +1163,7 @@ export default function App() {
               onNext={() => setStep(2)}
             />
           )}
-          {!loading && !loadError && step === 2 && (
+          {activeTab === "merge" && !loading && !loadError && step === 2 && (
             <ConfirmationStep
               combinations={combinations}
               folders={folders}
@@ -1117,7 +1172,7 @@ export default function App() {
               onConfirm={() => setStep(3)}
             />
           )}
-          {!loading && !loadError && step === 3 && (
+          {activeTab === "merge" && !loading && !loadError && step === 3 && (
             <ProgressStep
               combinations={combinations}
               onDone={(res) => {
@@ -1126,7 +1181,7 @@ export default function App() {
               }}
             />
           )}
-          {!loading && !loadError && step === 4 && (
+          {activeTab === "merge" && !loading && !loadError && step === 4 && (
             <SummaryStep results={results} onReset={reset} />
           )}
         </div>
