@@ -223,7 +223,9 @@ function ResultPanel({ result, onReset, templates }) {
         }
         <div className="flex-1">
           <p className={`font-semibold text-sm ${isError ? "text-red-700" : "text-emerald-700"}`}>
-            {isError ? "Update failed" : result.message}
+            {isError
+              ? "Update failed"
+              : `Successfully updated ${result.updated?.length ?? 0} field(s) across ${Object.keys(groupedUpdated).length} template(s).`}
           </p>
           {isError && (
             <p className="text-red-600 text-xs mt-1 font-mono break-all">{result.error}</p>
